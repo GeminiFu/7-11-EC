@@ -11,16 +11,33 @@
 </head>
 
 <body>
-    <select name="location" id="location">
+
+    <!-- 輸入 -->
+    <select name="input-location" id="input-location">
         <option value="">後</option>
         <option value="">旁</option>
         <option value="">倉</option>
         <option value="">DM</option>
     </select>
-    <input type="text" id="phone-number" placeholder="後三碼" value="123">
-    <input type="text" id="name" placeholder="名字" value="傅勝華">
-    <input type="text" id="note" placeholder="註記" value="博客來">
-    <button id="send-btn">送出</button>
+    <input type="text" id="input-phone-number" placeholder="後三碼" value="123">
+    <input type="text" id="input-name" placeholder="名字" value="傅勝華">
+    <input type="text" id="input-note" placeholder="註記" value="博客來">
+    <button id="input-btn">送出</button>
+
+    <!-- 查詢 -->
+
+    <!-- 清單 -->
+    <div>
+        <table id="package-list">
+            <tr>
+                <th>位置</th>
+                <th>後三碼</th>
+                <th>名字</th>
+                <th>備註</th>
+            </tr>
+        </table>
+    </div>
+
 </body>
 <script src="./js/index.js"></script>
 
