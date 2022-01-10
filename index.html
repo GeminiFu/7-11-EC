@@ -13,21 +13,29 @@
 <body>
 
     <!-- 輸入 -->
-    <select name="input-location" id="input-location">
-        <option value="">後</option>
-        <option value="">旁</option>
-        <option value="">倉</option>
-        <option value="">DM</option>
-    </select>
-    <input type="text" id="input-phone-number" placeholder="後三碼" value="123">
-    <input type="text" id="input-name" placeholder="名字" value="傅勝華">
-    <input type="text" id="input-note" placeholder="註記" value="博客來">
-    <button id="input-btn">送出</button>
+    <div id="input-body">
+        <select name="input-location" id="input-location">
+            <option value="">後</option>
+            <option value="">旁</option>
+            <option value="">倉</option>
+            <option value="">DM</option>
+        </select>
+        <input type="text" id="input-phone-number" placeholder="後三碼" value="123">
+        <input type="text" id="input-name" placeholder="名字" value="傅勝華">
+        <input type="text" id="input-note" placeholder="註記" value="博客來">
+        <button id="input-btn">送出</button>
+    </div>
 
     <!-- 查詢 -->
+    <div id="find-body">
+        <input type="text" id="find-phone-number">
+        <button id="find-btn">送出</button>
+    </div>
+
+    <div id="find-list"></div>
 
     <!-- 清單 -->
-    <div>
+    <div id="list-body">
         <table id="package-list">
             <tr>
                 <th>位置</th>
