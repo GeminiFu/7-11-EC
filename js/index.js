@@ -5,52 +5,20 @@ const packageLocation = document.getElementById("input-location"),
     customerName = document.getElementById("input-name"),
     note = document.getElementById("input-note"),
     inputBtn = document.getElementById("input-btn"),
-    key = "packageStorage";
+    key = "packageStorage",
+    keyForNewGuy = "ImNew";
 
-let packageData = [
-    {
-        "位置": "後",
-        "後三碼": 123,
-        "名字": "傅勝華",
-        "註記": "博客來"
-    },
-    {
-        "位置": "後",
-        "後三碼": 456,
-        "名字": "HAHA",
-        "註記": ""
-    },
-    {
-        "位置": "後",
-        "後三碼": 456,
-        "名字": "HAHA",
-        "註記": ""
-    },
-    {
-        "位置": "後",
-        "後三碼": 789,
-        "名字": "HIHI",
-        "註記": "LALALA"
-    },
-    {
-        "位置": "後",
-        "後三碼": 789,
-        "名字": "HIHI",
-        "註記": "LALALA"
-    },
-    {
-        "位置": "後",
-        "後三碼": 789,
-        "名字": "HIHI",
-        "註記": "LALALA"
-    }
-];
+let packageData = [];
 
+// 第一次進來沒有 localStorage.getItem(key) 的判定
+if (localStorage.getItem(key) !== "" && localStorage.getItem(key) !== null) {
+    packageData = JSON.parse(localStorage.getItem(key));
+}
 
 // 輸入按鈕事件
 inputBtn.addEventListener("click", function () {
     // 儲存資料進 packageData
-    packageData.push(
+    packageData.unshift(
         {
             "位置": packageLocation[packageLocation.selectedIndex].text,
             "後三碼": parseInt(phoneNumber.value),
@@ -61,7 +29,7 @@ inputBtn.addEventListener("click", function () {
 
     // emptyInput();
 
-    renderEveryPackageData(packageList);
+    render(packageList, packageData);
 
     // 存進 localStorage
     localStorage.setItem(key, JSON.stringify(packageData));
@@ -73,6 +41,16 @@ function emptyInput() {
     customerName.value = "";
     note.value = "";
 }
+
+// 清除所有資料
+const deleteAll = document.getElementById("delete-all");
+
+deleteAll.addEventListener("click", function () {
+    packageData = [];
+    localStorage.setItem(key, "");
+
+    render(packageList, packageData);
+})
 
 // ------------------------------------------------------------------------------
 // 查詢
@@ -92,7 +70,8 @@ findBtn.addEventListener("click", function () {
         }
     }
 
-    console.log(foundPackageList);
+    render(findList, foundPackageList);
+
 })
 
 
@@ -102,37 +81,160 @@ findBtn.addEventListener("click", function () {
 // 清單
 const packageList = document.getElementById("package-list");
 
-renderEveryPackageData(packageList);
+let deleteBtnArray = [];
 
+render(packageList, packageData);
 
-// 渲染初始化
-function renderPackageDataInitialize(renderOn) {
+// 渲染清單
+function render(renderOn, renderObject) {
+    // 渲染開頭欄位
     renderOn.innerHTML = `
         <tr>
             <th>位置</th>
             <th>後三碼</th>
             <th>名字</th>
             <th>備註</th>
+            <th></th>
         </tr>
     `;
-}
 
-// 渲染清單
-function renderPackageData(renderOn, renderIndex) {
-    renderOn.innerHTML += `
+    // 渲染目標的每個項目
+    for (let i = 0; i < renderObject.length; i++) {
+        renderOn.innerHTML += `
             <tr>
-                <td>${packageData[renderIndex]["位置"]}</td>
-                <td>${packageData[renderIndex]["後三碼"]}</td>
-                <td>${packageData[renderIndex]["名字"]}</td>
-                <td>${packageData[renderIndex]["註記"]}</td>
+                <td>${renderObject[i]["位置"]}</td>
+                <td>${renderObject[i]["後三碼"]}</td>
+                <td>${renderObject[i]["名字"]}</td>
+                <td>${renderObject[i]["註記"]}</td>
+                <td><button class="delete-package-list-item" data-target="${i}">X</button></td>
             </tr>`
+    }
+
+    // 賦予 deleteBtn 點擊事件
+    deleteBtnArray = document.getElementsByClassName("delete-package-list-item");
+
+    deleteBtn(deleteBtnArray);
 }
 
-// 渲染清單的每一項
-function renderEveryPackageData(renderOn) {
-    renderPackageDataInitialize(renderOn);
+// 清單項目的刪除按鈕事件
+function deleteBtn(obj) {
+    for (let i = 0; i < obj.length; i++) {
+        obj[i].addEventListener("click", function () {
+            const thisTr = this.parentNode.parentNode;
+            tbody = thisTr.parentNode;
 
-    for (let i = 0; i < packageData.length; i++) {
-        renderPackageData(renderOn, i);
+            let targetNumber = this.dataset.target;
+
+            // 從 packageData 移除
+            packageData.splice(targetNumber, 1);
+
+            // 儲存進 localStorage
+            localStorage.setItem(key, JSON.stringify(packageData));
+
+            // 從 tbody 移除
+            tbody.removeChild(thisTr);
+        })
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// 備用資料
+// packageData = [
+//     {
+//         "位置": "後",
+//         "後三碼": 123,
+//         "名字": "傅勝華",
+//         "註記": "博客來"
+//     },
+//     {
+//         "位置": "後",
+//         "後三碼": 456,
+//         "名字": "HAHA",
+//         "註記": ""
+//     },
+//     {
+//         "位置": "後",
+//         "後三碼": 456,
+//         "名字": "HAHA",
+//         "註記": ""
+//     },
+//     {
+//         "位置": "後",
+//         "後三碼": 789,
+//         "名字": "HIHI",
+//         "註記": "LALALA"
+//     },
+//     {
+//         "位置": "後",
+//         "後三碼": 789,
+//         "名字": "HIHI",
+//         "註記": "LALALA"
+//     },
+//     {
+//         "位置": "後",
+//         "後三碼": 789,
+//         "名字": "HIHI",
+//         "註記": "LALALA"
+//     },
+//     {
+//         "位置": "後",
+//         "後三碼": 123,
+//         "名字": "傅勝華",
+//         "註記": "博客來"
+//     },
+//     {
+//         "位置": "後",
+//         "後三碼": 123,
+//         "名字": "傅勝華",
+//         "註記": "博客來"
+//     },
+//     {
+//         "位置": "後",
+//         "後三碼": 123,
+//         "名字": "傅勝華",
+//         "註記": "博客來"
+//     },
+//     {
+//         "位置": "後",
+//         "後三碼": 456,
+//         "名字": "傅勝華",
+//         "註記": "博客來"
+//     }
+// ]

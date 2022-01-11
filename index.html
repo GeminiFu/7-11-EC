@@ -11,6 +11,9 @@
 </head>
 
 <body>
+    <!-- 上方欄 -->
+    <div id="top-bar">
+    </div>
 
     <!-- 輸入 -->
     <div id="input-body">
@@ -24,6 +27,9 @@
         <input type="text" id="input-name" placeholder="名字" value="傅勝華">
         <input type="text" id="input-note" placeholder="註記" value="博客來">
         <button id="input-btn">送出</button>
+
+        <!-- 刪除資料鈕 -->
+        <button id="delete-all">刪除所有資料</button>
     </div>
 
     <!-- 查詢 -->
@@ -32,19 +38,25 @@
         <button id="find-btn">送出</button>
     </div>
 
-    <div id="find-list"></div>
+    <table>
+        <tbody id="find-list"></tbody>
+    </table>
 
     <!-- 清單 -->
     <div id="list-body">
-        <table id="package-list">
-            <tr>
-                <th>位置</th>
-                <th>後三碼</th>
-                <th>名字</th>
-                <th>備註</th>
-            </tr>
+        <table>
+            <tbody id="package-list">
+                <tr>
+                    <th>位置</th>
+                    <th>後三碼</th>
+                    <th>名字</th>
+                    <th>備註</th>
+                </tr>
+            </tbody>
         </table>
     </div>
+
+
 
 </body>
 <script src="./js/index.js"></script>
