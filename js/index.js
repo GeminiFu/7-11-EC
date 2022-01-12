@@ -1,14 +1,58 @@
+const sideBody = document.getElementById("side-ody"),
+    mainBody = document.getElementById("main-body");
+
 // ------------------------------------------------------------------------------
 // 輸入
-const packageLocation = document.getElementById("input-location"),
-    phoneNumber = document.getElementById("input-phone-number"),
-    customerName = document.getElementById("input-name"),
-    note = document.getElementById("input-note"),
-    inputBtn = document.getElementById("input-btn"),
+const showInputBtn = document.getElementById("show-input-btn"),
     key = "packageStorage",
     keyForNewGuy = "ImNew";
 
-let packageData = [];
+let packageLocationion,
+    phoneNumber,
+    customerName,
+    note,
+    inputBtn,
+    deleteAll,
+    packageData = [];
+
+// 在 mainBody 顯示 inputBody
+showInputBtn.addEventListener("click", function () {
+    mainBody.innerHTML = `
+    <!-- 輸入 -->
+    <div id="input-body show">
+        <select name="input-location" id="input-location">
+            <option value="">後</option>
+            <option value="">旁</option>
+            <option value="">倉</option>
+            <option value="">DM</option>
+        </select>
+        <input type="text" id="input-phone-number" placeholder="後三碼" value="123">
+        <input type="text" id="input-name" placeholder="名字" value="傅勝華">
+        <input type="text" id="input-note" placeholder="註記" value="博客來">
+        <button id="input-btn">送出</button>
+
+        <!-- 刪除資料鈕 -->
+        <button id="delete-all">刪除所有資料</button>
+    </div>
+    `
+
+    getInputElement();
+})
+
+// 抓取節點
+function getInputElement() {
+    packageLocation = document.getElementById("input-location");
+    phoneNumber = document.getElementById("input-phone-number");
+    customerName = document.getElementById("input-name");
+    note = document.getElementById("input-note");
+    inputBtn = document.getElementById("input-btn"),
+        deleteAll = document.getElementById("delete-all");
+
+
+    inputBtnClickEvent();
+
+    deleteAllBtnClickEvent();
+}
 
 // 第一次進來沒有 localStorage.getItem(key) 的判定
 if (localStorage.getItem(key) !== "" && localStorage.getItem(key) !== null) {
@@ -16,24 +60,26 @@ if (localStorage.getItem(key) !== "" && localStorage.getItem(key) !== null) {
 }
 
 // 輸入按鈕事件
-inputBtn.addEventListener("click", function () {
-    // 儲存資料進 packageData
-    packageData.unshift(
-        {
-            "位置": packageLocation[packageLocation.selectedIndex].text,
-            "後三碼": parseInt(phoneNumber.value),
-            "名字": customerName.value,
-            "註記": note.value
-        }
-    )
+function inputBtnClickEvent() {
+    inputBtn.addEventListener("click", function () {
+        // 儲存資料進 packageData
+        packageData.unshift(
+            {
+                "位置": packageLocation[packageLocation.selectedIndex].text,
+                "後三碼": parseInt(phoneNumber.value),
+                "名字": customerName.value,
+                "註記": note.value
+            }
+        )
 
-    // emptyInput();
+        // emptyInput();
 
-    render(packageList, packageData);
+        render(packageList, packageData);
 
-    // 存進 localStorage
-    localStorage.setItem(key, JSON.stringify(packageData));
-})
+        // 存進 localStorage
+        localStorage.setItem(key, JSON.stringify(packageData));
+    });
+}
 
 // 刪除 input的內容
 function emptyInput() {
@@ -43,47 +89,104 @@ function emptyInput() {
 }
 
 // 清除所有資料
-const deleteAll = document.getElementById("delete-all");
+function deleteAllBtnClickEvent() {
+    deleteAll.addEventListener("click", function () {
+        packageData = [];
+        localStorage.setItem(key, "");
 
-deleteAll.addEventListener("click", function () {
-    packageData = [];
-    localStorage.setItem(key, "");
+        render(packageList, packageData);
+    });
+}
 
-    render(packageList, packageData);
-})
 
 // ------------------------------------------------------------------------------
 // 查詢
-const findPhoneNumber = document.getElementById("find-phone-number"),
-    findBtn = document.getElementById("find-btn"),
-    findList = document.getElementById("find-list");
+const showFindBtn = document.getElementById("show-find-btn");
 
-let foundPackageList = []
 
-findBtn.addEventListener("click", function () {
+let findPhoneNumber,
+    findBtn,
+    findList,
     foundPackageList = [];
 
-    for (let i = 0; i < packageData.length; i++) {
+// 在 mainBody 顯示 findBody
+showFindBtn.addEventListener("click", function () {
+    mainBody.innerHTML = `
+    <div id="find-body">
+            <input type="text" id="find-phone-number">
+            <button id="find-btn">送出</button>
+        </div>
 
-        if (packageData[i]["後三碼"] === parseInt(findPhoneNumber.value)) {
-            foundPackageList.push(packageData[i]);
-        }
-    }
+        <table>
+            <tbody id="find-list"></tbody>
+        </table>
+    `
 
-    render(findList, foundPackageList);
-
+    getFindElement();
 })
+
+// 抓取 find 節點
+function getFindElement() {
+    findPhoneNumber = document.getElementById("find-phone-number");
+    findBtn = document.getElementById("find-btn");
+    findList = document.getElementById("find-list");
+
+    findBtnClickEvent();
+}
+
+// 查詢按鈕
+function findBtnClickEvent() {
+    findBtn.addEventListener("click", function () {
+        foundPackageList = [];
+
+        for (let i = 0; i < packageData.length; i++) {
+
+            if (packageData[i]["後三碼"] === parseInt(findPhoneNumber.value)) {
+                foundPackageList.push(packageData[i]);
+            }
+        }
+
+        render(findList, foundPackageList);
+
+    })
+}
 
 
 
 
 // ------------------------------------------------------------------------------
 // 清單
-const packageList = document.getElementById("package-list");
+const showListBtn = document.getElementById("show-list-btn");
 
-let deleteBtnArray = [];
+let packageList,
+    deleteBtnArray = [];
 
-render(packageList, packageData);
+// 在 mainBody 顯示 listBody
+showListBtn.addEventListener("click", function () {
+    mainBody.innerHTML = `
+    <div id="list-body">
+        <table>
+            <tbody id="package-list">
+                <tr>
+                    <th>位置</th>
+                    <th>後三碼</th>
+                    <th>名字</th>
+                    <th>備註</th>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    `
+
+    getListElement()
+
+    render(packageList, packageData);
+})
+
+// 抓取 list 節點
+function getListElement() {
+    packageList = document.getElementById("package-list");
+}
 
 // 渲染清單
 function render(renderOn, renderObject) {
