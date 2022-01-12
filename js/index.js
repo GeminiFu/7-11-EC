@@ -13,7 +13,8 @@ let packageLocationion,
     note,
     inputBtn,
     deleteAll,
-    packageData = [];
+    packageData = [],
+    inputIntervalId;
 
 // 在 mainBody 顯示 inputBody
 showInputBtn.addEventListener("click", function () {
@@ -26,9 +27,9 @@ showInputBtn.addEventListener("click", function () {
             <option value="">倉</option>
             <option value="">DM</option>
         </select>
-        <input type="text" id="input-phone-number" placeholder="後三碼" value="123">
-        <input type="text" id="input-name" placeholder="名字" value="傅勝華">
-        <input type="text" id="input-note" placeholder="註記" value="博客來">
+        <input type="number" id="input-phone-number" placeholder="後三碼">
+        <input type="text" id="input-name" placeholder="名字">
+        <input type="text" id="input-note" placeholder="註記">
         <button id="input-btn">送出</button>
 
         <!-- 刪除資料鈕 -->
@@ -37,6 +38,8 @@ showInputBtn.addEventListener("click", function () {
     `
 
     getInputElement();
+
+    phoneNumber.focus();
 })
 
 // 抓取節點
@@ -72,12 +75,12 @@ function inputBtnClickEvent() {
             }
         )
 
-        // emptyInput();
-
-        render(packageList, packageData);
+        emptyInput();
 
         // 存進 localStorage
         localStorage.setItem(key, JSON.stringify(packageData));
+
+        showInputBtn.click();
     });
 }
 
@@ -93,10 +96,25 @@ function deleteAllBtnClickEvent() {
     deleteAll.addEventListener("click", function () {
         packageData = [];
         localStorage.setItem(key, "");
-
-        render(packageList, packageData);
     });
 }
+
+// TODO: 數字輸入三碼後，觸發事件
+
+// TODO: focus 名字 input
+function focusName() {
+    customerName.focus();
+}
+
+// Enter 事件
+window.addEventListener("keydown", function (e) {
+    let keyCode = e.code;
+    if (keyCode === "Enter") {
+        console.log("test");
+
+        inputBtn.click();
+    }
+})
 
 
 // ------------------------------------------------------------------------------
@@ -113,7 +131,7 @@ let findPhoneNumber,
 showFindBtn.addEventListener("click", function () {
     mainBody.innerHTML = `
     <div id="find-body">
-            <input type="text" id="find-phone-number">
+            <input type="number" id="find-phone-number">
             <button id="find-btn">送出</button>
         </div>
 
@@ -123,7 +141,15 @@ showFindBtn.addEventListener("click", function () {
     `
 
     getFindElement();
+
+    findPhoneNumber.focus();
 })
+
+
+// TODO: 數字輸入三碼後，觸發事件
+
+
+showFindBtn.click();
 
 // 抓取 find 節點
 function getFindElement() {
@@ -148,9 +174,9 @@ function findBtnClickEvent() {
 
         render(findList, foundPackageList);
 
+        findPhoneNumber.value = "";
     })
 }
-
 
 
 
