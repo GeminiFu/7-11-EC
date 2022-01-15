@@ -1,62 +1,97 @@
 :root {
-    --side-body-width: 20%;
+    --side-body-height: calc(100vw * 0.2);
+    
+    --show-off-width: 5rem;
+    --show-off-height: 3rem;
 
-    font-size: 30px;
+    font-size: 16px;
+    --show-off-font-size: 1.2rem;
 }
 
 body {
     display: flex;
+    flex-direction: column;
 }
 
+/* ----------- side-body ----------- */
 #side-body {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    justify-content: space-around;
 
-    width: var(--side-body-width);
-    height: 100vh;
+    width: 100vw;
+    height: var(--side-body-height);
 
-    margin: 10px;
+    margin: 10px 0 40px 0;
 }
 
-#show-btn-group {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-
-    height: 50%;
-}
-
+/* ----------- main-body ----------- */
 #main-body {
     display: flex;
-    flex-direction: column;
+    /* flex-direction: column; */
     justify-content: center;
     align-items: center;
 
-    width: calc(100% - var(--side-body-width));
-    height: 100vh;
+    width: 100vw;
+    height: calc(100% - var(--side-body-height));
 }
+
+
+
+/* ----------- select input button ----------- */
+select {
+    width: var(--show-off-width);
+    height: var(--show-off-height);
+
+    font-size: var(--show-off-font-size);
+    text-align: center;
+}
+
+input {
+    width: var(--show-off-width);
+    height: var(--show-off-height);
+
+    font-size: var(--show-off-font-size);
+    text-align: center;
+}
+
+button {
+    width: var(--show-off-width);
+    height: var(--show-off-height);
+
+    font-size: var(--show-off-font-size);
+    text-align: center;
+}
+
+/* ----------- input ----------- */
+#delete-all {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+
+    border: none;
+    width: 7rem;
+    height: 25px;
+
+    font-size: 1rem;
+    color: rgba(0, 0, 0, 0.336);
+
+}
+
 
 .show {
 
 }
 
-select {
-    width: 100px;
-    height: 50px;
 
-    font-size: 30px;
-    text-align: center;
+/* ----------- list ----------- */
+#package-list td,
+#package-list th {
+    padding: 10px;
 }
 
-input {
-    width: 100px;
-    height: 50px;
+.delete-package-list-item {
+    width: 1.5rem;
+    height: 1.5rem;
 
-    font-size: 30px;
-    text-align: center;
-}
-
-button {
-    font-size: 30px;
+    font-size: 1rem;
 }

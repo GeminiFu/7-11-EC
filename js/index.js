@@ -10,9 +10,9 @@ const showInputBtn = document.getElementById("show-input-btn"),
 let packageLocationion,
     phoneNumber,
     customerName,
-    note,
     inputBtn,
     deleteAll,
+    topThreeDataBody,
     packageData = [],
     inputIntervalId;
 
@@ -26,11 +26,19 @@ showInputBtn.addEventListener("click", function () {
             <option value="">旁</option>
             <option value="">倉</option>
             <option value="">DM</option>
+            <option value="">博克萊</option>
         </select>
         <input type="number" id="input-phone-number" placeholder="後三碼">
         <input type="text" id="input-name" placeholder="名字">
-        <input type="text" id="input-note" placeholder="註記">
-        <button id="input-btn">送出</button>
+
+        <div>
+            <button id="input-btn">送出</button>
+        </div>
+
+        <table>
+            <tbody id="input-top-three-body">
+            </tbody>
+        </table>
 
         <!-- 刪除資料鈕 -->
         <button id="delete-all">刪除所有資料</button>
@@ -47,9 +55,9 @@ function getInputElement() {
     packageLocation = document.getElementById("input-location");
     phoneNumber = document.getElementById("input-phone-number");
     customerName = document.getElementById("input-name");
-    note = document.getElementById("input-note");
     inputBtn = document.getElementById("input-btn"),
-        deleteAll = document.getElementById("delete-all");
+        deleteAll = document.getElementById("delete-all"),
+        topThreeDataBody = document.getElementById("input-top-three-body");
 
 
     inputBtnClickEvent();
@@ -70,8 +78,7 @@ function inputBtnClickEvent() {
             {
                 "位置": packageLocation[packageLocation.selectedIndex].text,
                 "後三碼": parseInt(phoneNumber.value),
-                "名字": customerName.value,
-                "註記": note.value
+                "名字": customerName.value
             }
         )
 
@@ -81,14 +88,34 @@ function inputBtnClickEvent() {
         localStorage.setItem(key, JSON.stringify(packageData));
 
         showInputBtn.click();
+
+        renderTopThree(topThreeDataBody);
     });
+}
+
+// 渲染前三項
+function renderTopThree(renderOn) {
+    let topThreePackageData = [],
+        dataLength = packageData.length;
+
+    if (dataLength >= 3) {
+        dataLength = 3;
+    }
+
+
+    for (let i = 0; i < dataLength; i++) {
+        topThreePackageData.push(packageData[i]);
+    }
+
+
+
+    render(renderOn, topThreePackageData);
 }
 
 // 刪除 input的內容
 function emptyInput() {
     phoneNumber.value = "";
     customerName.value = "";
-    note.value = "";
 }
 
 // 清除所有資料
@@ -110,7 +137,6 @@ function focusName() {
 window.addEventListener("keydown", function (e) {
     let keyCode = e.code;
     if (keyCode === "Enter") {
-        console.log("test");
 
         inputBtn.click();
     }
@@ -197,7 +223,6 @@ showListBtn.addEventListener("click", function () {
                     <th>位置</th>
                     <th>後三碼</th>
                     <th>名字</th>
-                    <th>備註</th>
                 </tr>
             </tbody>
         </table>
@@ -222,7 +247,6 @@ function render(renderOn, renderObject) {
             <th>位置</th>
             <th>後三碼</th>
             <th>名字</th>
-            <th>備註</th>
             <th></th>
         </tr>
     `;
@@ -234,7 +258,6 @@ function render(renderOn, renderObject) {
                 <td>${renderObject[i]["位置"]}</td>
                 <td>${renderObject[i]["後三碼"]}</td>
                 <td>${renderObject[i]["名字"]}</td>
-                <td>${renderObject[i]["註記"]}</td>
                 <td><button class="delete-package-list-item" data-target="${i}">X</button></td>
             </tr>`
     }
