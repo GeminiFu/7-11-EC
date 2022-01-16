@@ -1,23 +1,35 @@
 const sideBody = document.getElementById("side-ody"),
     mainBody = document.getElementById("main-body");
 
+
+
 // ------------------------------------------------------------------------------
 // 輸入
 const showInputBtn = document.getElementById("show-input-btn"),
     key = "packageStorage",
     keyForNewGuy = "ImNew";
 
-let packageLocationion,
+
+let packageLocation,
     phoneNumber,
     customerName,
     inputBtn,
+    editLocationData,
     deleteAll,
     topThreeDataBody,
     packageData = [],
     inputIntervalId;
 
+// 第一次進來沒有 localStorage.getItem(key) 的判定
+if (localStorage.getItem(key) !== "" && localStorage.getItem(key) !== null) {
+    packageData = JSON.parse(localStorage.getItem(key));
+}
+
 // 在 mainBody 顯示 inputBody
 showInputBtn.addEventListener("click", function () {
+
+
+    // 渲染輸出頁面
     mainBody.innerHTML = `
     <!-- 輸入 -->
     <div id="input-body show">
@@ -40,14 +52,33 @@ showInputBtn.addEventListener("click", function () {
             </tbody>
         </table>
 
+        <!-- 編輯位置 -->
+        <button id="edit-location-data">編輯位置</button>
         <!-- 刪除資料鈕 -->
         <button id="delete-all">刪除所有資料</button>
     </div>
     `
 
+    // 抓取節點
     getInputElement();
 
+    // 輸入按鈕事件
+    inputBtnClickEvent();
+
     phoneNumber.focus();
+
+    // 輸入後三碼點擊事件
+    phoneNumberClickEvent();
+
+    // 點擊後三碼
+    phoneNumber.click();
+
+    // 渲染前三項
+    renderTopThree(topThreeDataBody);
+
+    deleteAllBtnClickEvent();
+
+    editLocationDataClickEvent();
 })
 
 // 抓取節點
@@ -56,19 +87,11 @@ function getInputElement() {
     phoneNumber = document.getElementById("input-phone-number");
     customerName = document.getElementById("input-name");
     inputBtn = document.getElementById("input-btn"),
+        editLocationData = document.getElementById("edit-location-data"),
         deleteAll = document.getElementById("delete-all"),
         topThreeDataBody = document.getElementById("input-top-three-body");
-
-
-    inputBtnClickEvent();
-
-    deleteAllBtnClickEvent();
 }
 
-// 第一次進來沒有 localStorage.getItem(key) 的判定
-if (localStorage.getItem(key) !== "" && localStorage.getItem(key) !== null) {
-    packageData = JSON.parse(localStorage.getItem(key));
-}
 
 // 輸入按鈕事件
 function inputBtnClickEvent() {
@@ -82,16 +105,17 @@ function inputBtnClickEvent() {
             }
         )
 
-        emptyInput();
-
         // 存進 localStorage
         localStorage.setItem(key, JSON.stringify(packageData));
 
-        showInputBtn.click();
+        // 清空 input 內容
+        // emptyInput(phoneNumber, customerName);
 
-        renderTopThree(topThreeDataBody);
+        // 重新渲染輸出畫面
+        showInputBtn.click();
     });
 }
+
 
 // 渲染前三項
 function renderTopThree(renderOn) {
@@ -112,10 +136,21 @@ function renderTopThree(renderOn) {
     render(renderOn, topThreePackageData);
 }
 
-// 刪除 input的內容
-function emptyInput() {
-    phoneNumber.value = "";
-    customerName.value = "";
+// phoneNumber 點擊事件
+function phoneNumberClickEvent() {
+    phoneNumber.addEventListener("click", function () {
+        let intervalId;
+
+        phoneNumber.value = "";
+
+        intervalId = setInterval(() => {
+            if (phoneNumber.value.length === 3) {
+                customerName.focus();
+
+                clearInterval(intervalId);
+            }
+        }, 100);
+    });
 }
 
 // 清除所有資料
@@ -124,13 +159,6 @@ function deleteAllBtnClickEvent() {
         packageData = [];
         localStorage.setItem(key, "");
     });
-}
-
-// TODO: 數字輸入三碼後，觸發事件
-
-// TODO: focus 名字 input
-function focusName() {
-    customerName.focus();
 }
 
 // Enter 事件
@@ -142,6 +170,72 @@ window.addEventListener("keydown", function (e) {
     }
 })
 
+// TODO: 紀錄日期，過了一天，讓清除資料 high light
+
+
+// TODO: 編輯位置點擊事件
+function editLocationDataClickEvent() {
+    editLocationData.addEventListener("click", function () {
+        console.log(this);
+        // 打開一個 location data body 視窗在 mainBody
+        mainBody.innerHTML += `
+        <div id="location-data-background">
+            <table>
+                <tbody id ="location-data-body"></tbody>
+            </table>
+        </div>
+    `
+        let locationDataBody = document.getElementById("location-data-body");
+
+        // 在 location data body 渲染 packageLocation 裡的 option
+        for (let i = 0; i < packageLocation.children.length; i++) {
+            locationDataBody.innerHTML += `
+            <tr>
+                <td>${packageLocation.children[i].text}</td>
+                <td><button class="location-delete-btn">X</button></td>
+            </tr>
+            `
+        }
+
+        locationDataBody.innerHTML += `
+        <tr>
+            <td><button>新增位置</button></td>
+            <td><button id="leave-edit-location-btn">離開</button></td>
+        <tr>
+        `
+
+        locationDeleteBtn();
+
+        leaveEditLocation();
+    })
+}
+
+// location delete btn
+function locationDeleteBtn() {
+    let locationDeleteBtnArr = document.getElementsByClassName("location-delete-btn");
+
+    for (let i = 0; i < locationDeleteBtnArr.length; i++) {
+        locationDeleteBtnArr[i].addEventListener("click", function () {
+            console.log(this.parentNode.parentNode);
+
+            let thisTr = this.parentNode.parentNode;
+
+            thisTr.parentNode.removeChild(thisTr)
+        })
+    }
+}
+
+// leave edit location btn
+function leaveEditLocation() {
+    let leaveEditLocationBtn = document.getElementById("leave-edit-location-btn"),
+        allEditLocation = document.getElementById("location-data-background");
+
+    leaveEditLocationBtn.addEventListener("click", function () {
+        console.log(this);
+
+        mainBody.removeChild(allEditLocation);
+    })
+}
 
 // ------------------------------------------------------------------------------
 // 查詢
@@ -168,22 +262,37 @@ showFindBtn.addEventListener("click", function () {
 
     getFindElement();
 
+    findBtnClickEvent();
+
     findPhoneNumber.focus();
+
+    findPhoneNumberClickEvent();
 })
 
 
-// TODO: 數字輸入三碼後，觸發事件
 
+// findPhoneNumber 點擊事件
+function findPhoneNumberClickEvent() {
+    findPhoneNumber.addEventListener("click", function () {
+        let intervalId;
 
-showFindBtn.click();
+        findPhoneNumber.value = "";
+
+        intervalId = setInterval(() => {
+            if (findPhoneNumber.value.length === 3) {
+                findBtn.click();
+
+                clearInterval(intervalId);
+            }
+        }, 100);
+    });
+}
 
 // 抓取 find 節點
 function getFindElement() {
     findPhoneNumber = document.getElementById("find-phone-number");
     findBtn = document.getElementById("find-btn");
     findList = document.getElementById("find-list");
-
-    findBtnClickEvent();
 }
 
 // 查詢按鈕
@@ -200,18 +309,17 @@ function findBtnClickEvent() {
 
         render(findList, foundPackageList);
 
-        findPhoneNumber.value = "";
+        findPhoneNumber.click();
     })
 }
 
-
+showFindBtn.click();
 
 // ------------------------------------------------------------------------------
 // 清單
 const showListBtn = document.getElementById("show-list-btn");
 
-let packageList,
-    deleteBtnArray = [];
+let packageList;
 
 // 在 mainBody 顯示 listBody
 showListBtn.addEventListener("click", function () {
@@ -262,16 +370,15 @@ function render(renderOn, renderObject) {
             </tr>`
     }
 
-    // 賦予 deleteBtn 點擊事件
-    deleteBtnArray = document.getElementsByClassName("delete-package-list-item");
-
-    deleteBtn(deleteBtnArray);
+    listDeleteBtn();
 }
 
 // 清單項目的刪除按鈕事件
-function deleteBtn(obj) {
-    for (let i = 0; i < obj.length; i++) {
-        obj[i].addEventListener("click", function () {
+function listDeleteBtn() {
+    let listDeleteBtnArray = document.getElementsByClassName("delete-package-list-item");
+
+    for (let i = 0; i < listDeleteBtnArray.length; i++) {
+        listDeleteBtnArray[i].addEventListener("click", function () {
             const thisTr = this.parentNode.parentNode;
             tbody = thisTr.parentNode;
 

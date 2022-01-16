@@ -27,7 +27,7 @@ body {
 /* ----------- main-body ----------- */
 #main-body {
     display: flex;
-    /* flex-direction: column; */
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 
@@ -63,6 +63,20 @@ button {
 }
 
 /* ----------- input ----------- */
+#edit-location-data {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+
+    border: none;
+    width: 7rem;
+    height: 25px;
+
+    font-size: 1rem;
+    color: rgba(0, 0, 0, 0.336);
+
+}
+
 #delete-all {
     position: absolute;
     right: 0;
@@ -77,6 +91,25 @@ button {
 
 }
 
+#location-data-background {
+    width: 100vw;
+    height: 100vh;
+
+    background: rgba(0, 0, 0, 0.8);
+
+    position: absolute;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#location-data-background table {
+    width: 75vw;
+    height: 75vh;
+
+    background: white;
+}
 
 .show {
 
